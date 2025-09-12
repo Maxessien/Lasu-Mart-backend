@@ -17,17 +17,17 @@ const firebaseAuthErrors = [
   },
   {
     errorType: "auth/user-not-found",
-    customMessage: "No account found with this email.",
+    customMessage: "Invalid email or password.",
     statusCode: 404,
   },
   {
     errorType: "auth/wrong-password",
-    customMessage: "Incorrect password. Try again.",
+    customMessage: "Invalid email or password",
     statusCode: 401,
   },
   {
-    errorType: "auth/email-already-in-use",
-    customMessage: "This email is already linked to another account.",
+    errorType: "auth/email-already-exists",
+    customMessage: "This email is already in use",
     statusCode: 409,
   },
   {
@@ -45,6 +45,11 @@ const firebaseAuthErrors = [
   {
     errorType: "auth/invalid-phone-number",
     customMessage: "Phone number format is invalid.",
+    statusCode: 400,
+  },
+  {
+    errorType: "auth/phone-number-already-exist",
+    customMessage: "Phone number already in use",
     statusCode: 400,
   },
   {
