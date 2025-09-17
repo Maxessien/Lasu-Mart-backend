@@ -17,6 +17,7 @@ const createUser = async (req, res) => {
     console.log(dbStore);
     return res.status(201).json({ message: "Account created successfully" });
   } catch (err) {
+    console.log(err)
     const errorMessage = findError(err.code);
     console.log(errorMessage);
     return res.status(errorMessage?.statusCode || 500).json({
@@ -28,14 +29,14 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     console.log(req.auth);
-    const user = await auth.updateUser(req.auth);
+    const user = await auth.updateUser(req.auth.uid, req.body);
     const dbStore = await User.findOneAndUpdate(
       { userId: req.auth.uid },
       req.body,
       { new: true }
     ).lean();
     console.log(dbStore);
-    return res.status(201).json({ dbStore });
+    return res.status(201).json(dbStore);
   } catch (err) {
     const errorMessage = findError(err.code);
     console.log(errorMessage);
@@ -48,11 +49,12 @@ const updateUser = async (req, res) => {
 const uploadUserProfilePhoto = (type="upload")=> async (req, res) => {
   console.log("Visited upload");
   try {
+    let profilePhotoDb
     if (type==="update"){
-      const profilePhotoDb = await User.findOne({userId: req.auth.uid}).select("profilePicture")
+      profilePhotoDb = await User.findOne({userId: req.auth.uid}).select("profilePicture")
     }
     const uploadedImage = await uploader.upload(req.file.path, {
-      folder: profilePhotoDb?.publicId || "lasu_mart/user_profile_photos",
+      folder: profilePhotoDb?.profilePicture.publicId || "lasu_mart/user_profile_photos",
     });
     const storedInDb = await User.findOneAndUpdate(
       { userId: req.auth.uid },
@@ -68,8 +70,8 @@ const uploadUserProfilePhoto = (type="upload")=> async (req, res) => {
     return res.status(201).json(storedInDb);
   } catch (err) {
     console.log(err);
-    const errorMessage = null;
-    // console.log(errorMessage);
+    const errorMessage = findError(err.code);
+    console.log(errorMessage);
     return res.status(errorMessage?.statusCode || 500).json({
       message: errorMessage?.customMessage || "Server error, try again later",
     });
@@ -81,7 +83,7 @@ const deleteUserProfilePhoto = async(req, res)=>{
       const profilePhotoDb = await User.findOne({userId: req.auth.uid}).select("profilePicture")
     await uploader.destroy(profilePhotoDb.publicId)
     const updatedUserDb = await User.findOneAndUpdate({userId: req.auth.uid}, {
-      profilePhoto: {
+      profilePicture: {
         url: "default",
         publicId: "default_public_id"
       }
