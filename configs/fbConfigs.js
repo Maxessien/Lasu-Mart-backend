@@ -17,9 +17,11 @@ if (process.env.NODE_ENV === "development") {
 const db = admin.firestore();
 const auth = admin.auth();
 
-db.settings({
-  host: "127.0.0.1:8080",
-  ssl: false,
-});
+if (process.env.NODE_ENV === "development"){
+  db.settings({
+    host: "127.0.0.1:8080",
+    ssl: false,
+  });
+}
 
 export { auth, db };

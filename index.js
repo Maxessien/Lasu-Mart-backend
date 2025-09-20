@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 app.use(
   cors({
-    origin: true,
+    origin: process.env.CORS_ORIGIN,
   })
 );
 app.use(express.json());
@@ -35,22 +35,21 @@ try {
   newTest.forEach((test) => {
     newArray.push({
       name: test.title,
-      price: test.price,
-      discountPercentage: test.discountPercentage,
+      price: Number(test.price),
+      discountPrice: test.price-(Number(test.discountPercentage/100)*Number(test.price)),
       imageUrl: test.images[0],
-      productId: test.id,
+      productId: test.id * Math.random()*10,
       category: test.category,
       productReviews: test.reviews,
-      vendorId: test.id,
+      vendorId: test.id * Math.random()*10,
       description: test.description,
       tags: test.tags,
       ratings: test.rating,
       comments: test.reviews[0].comment,
     });
   });
-  console.log(newArray)
   const dbStore = await Product.insertMany(newArray);
-  console.log(dbStore);
+  console.log(dbStore[0].createdAt, "hello");
 } catch (err) {
   console.log(err);
 }

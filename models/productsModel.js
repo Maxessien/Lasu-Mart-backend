@@ -3,10 +3,10 @@ import { model, Schema } from "mongoose";
 const productSchema = new Schema(
   {
     name: { type: String, required: true },
-    price: { type: String, required: true },
-    discountPercentage: { type: Number, required: true, default: 0 },
+    price: { type: Number, required: true },
+    discountPrice: { type: Number, required: true, default: 0 },
     imageUrl: { type: String, required: true },
-    productId: { type: String, required: true, unique: true },
+    productId: { type: String, required: true },
     category: { type: Array, required: true },
     productReviews: { type: Array, required: true, default: [] },
     vendorId: { type: String, required: true },
@@ -16,7 +16,7 @@ const productSchema = new Schema(
     comments: { type: [String], required: true, default: [] },
     vectorRepresentation: { type: [Number], required: true, default: [] },
   },
-  { timeStamp: true }
+  { timestamps: true }
 );
 
 export const Product = model("Product", productSchema);

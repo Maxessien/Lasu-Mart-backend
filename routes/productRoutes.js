@@ -3,7 +3,7 @@ import { getProducts, getTrendingProducts } from "../controllers/productControll
 
 const router = express.Router()
 
-router.get("/get", getProducts)
+router.post("/get_products", getProducts)
 router.get("/trending", getTrendingProducts)
 
 export default router
