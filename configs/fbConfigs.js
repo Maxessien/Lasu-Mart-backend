@@ -1,18 +1,25 @@
-import admin from "firebase-admin"
-import serviceAccount from "./serviceAccount.js"
+import admin from "firebase-admin";
+import serviceAccount from "./serviceAccount.js";
 
-process.env.FIREBASE_AUTH_EMULATOR_HOST = "localhost:9099";
+process.env.FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9099";
 
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-})
+if (process.env.NODE_ENV === "development") {
+  admin.initializeApp({
+    projectId: "indieverse-7d904",
+  });
+  console.log(admin.app().options.projectId);
+} else {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
 
-const db = admin.firestore()
-const auth = admin.auth()
+const db = admin.firestore();
+const auth = admin.auth();
 
 db.settings({
-    host: "127.0.0.1:8080",
-    ssl: false
-})
+  host: "127.0.0.1:8080",
+  ssl: false,
+});
 
-export {auth, db}
+export { auth, db };

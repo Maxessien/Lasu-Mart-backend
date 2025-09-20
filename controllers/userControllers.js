@@ -6,8 +6,9 @@ import { cleanUpStorage } from "../utils/usersUtilFns.js";
 
 const createUser = async (req, res) => {
   try {
-    console.log(req.body);
     const user = await auth.createUser(req.body);
+    await auth.setCustomUserClaims(user.uid, {role: "user"})
+    console.log(user, "user")
     const dbStore = await User.create({
       userId: user.uid,
       email: user.email,
@@ -25,6 +26,18 @@ const createUser = async (req, res) => {
     });
   }
 };
+
+const getUser = async (req, res)=>{
+  try {
+    const uid = req.param.uid
+    const user = await User.findOne({userId: uid}).lean()
+    console.log(user)
+    return res.status(202).json(user)
+  } catch (err) {
+    console.log(err)
+    return res.status(404).json({message: "User not found"})
+  }
+}
 
 const updateUser = async (req, res) => {
   try {
@@ -95,4 +108,4 @@ const deleteUserProfilePhoto = async(req, res)=>{
   }
 }
 
-export { createUser, updateUser, uploadUserProfilePhoto, deleteUserProfilePhoto };
+export { createUser, updateUser, uploadUserProfilePhoto, deleteUserProfilePhoto, getUser };
