@@ -10,10 +10,14 @@ import { test } from "./test.js";
 
 dotenv.config();
 
+console.log(process.env.CORS_ORIGIN)
+
 const app = express();
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   })
 );
 app.use(express.json());
@@ -48,6 +52,7 @@ try {
       comments: test.reviews[0].comment,
     });
   });
+  console.log(newArray.length)
   const dbStore = await Product.insertMany(newArray);
   console.log(dbStore[0].createdAt, "hello");
 } catch (err) {
