@@ -7,6 +7,8 @@ import dotenv from "dotenv";
 import { connectDB } from "./configs/mongoDBConfig.js";
 import { Product } from "./models/productsModel.js";
 import { test } from "./test.js";
+import mongoose from "mongoose";
+import { User } from "./models/usersModel.js";
 
 dotenv.config();
 
@@ -52,8 +54,9 @@ try {
       comments: test.reviews[0].comment,
     });
   });
-  console.log(newArray.length)
   const dbStore = await Product.insertMany(newArray);
+  const count = await Product.countDocuments()
+  console.log(count)
   console.log(dbStore[0].createdAt, "hello");
 } catch (err) {
   console.log(err);

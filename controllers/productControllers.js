@@ -14,7 +14,7 @@ const getProducts = async (req, res) => {
     const count = await Product.countDocuments()
     console.log(count)
     // console.log(products);
-    return res.status(202).json({data: products, totalPages: Math.floor(count/40)});
+    return res.status(202).json({data: products, totalPages: Math.floor(count/20)});
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
@@ -27,7 +27,7 @@ const getTrendingProducts = async (req, res) => {
       .sort([["ratings", "desc"]])
       .limit(6)
       .lean();
-    console.log(trendingProducts, "trdprod");
+    // console.log(trendingProducts, "trdprod");
     return res.status(202).json(trendingProducts);
   } catch (err) {
     console.log(err);

@@ -28,10 +28,11 @@ const createUser = async (req, res) => {
 };
 
 const getUser = async (req, res)=>{
+  console.log("fetting")
   try {
-    const uid = req.param.uid
+    const uid = req.query.uid
     const user = await User.findOne({userId: uid}).lean()
-    console.log(user)
+    console.log(user, "loggedIn")
     return res.status(202).json(user)
   } catch (err) {
     console.log(err)
@@ -42,14 +43,17 @@ const getUser = async (req, res)=>{
 const updateUser = async (req, res) => {
   try {
     console.log(req.auth);
-    const user = await auth.updateUser(req.auth.uid, req.body);
+    if (!req.param || req.param  !== "dbOnly"){
+      const user = await auth.updateUser(req.auth.uid, req.body);
+    }
+    console.log(req.body)
     const dbStore = await User.findOneAndUpdate(
       { userId: req.auth.uid },
       req.body,
       { new: true }
     ).lean();
     console.log(dbStore);
-    return res.status(201).json(dbStore);
+    return res.status(201).json({message: "Update Successful"});
   } catch (err) {
     const errorMessage = findError(err.code);
     console.log(errorMessage);

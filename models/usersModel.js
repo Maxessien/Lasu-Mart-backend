@@ -14,7 +14,9 @@ const userSchema = new Schema(
     cart: {
       type: [
         {
-          productId: { type: String, required: true },
+          name: { type: String, required: true },
+          price: {type: Number, required: true},
+          imageUrl: {type: String, required: true},
           variant: String,
           quantity: { type: Number, default: 1 },
         },
