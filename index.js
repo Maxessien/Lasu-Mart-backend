@@ -13,9 +13,8 @@ import { auth } from "./configs/fbConfigs.js";
 
 dotenv.config();
 
-console.log(process.env.CORS_ORIGIN)
-
 const app = express();
+
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
@@ -23,6 +22,7 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(express.json());
 
 const newTest = test.products;
