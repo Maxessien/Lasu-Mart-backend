@@ -9,6 +9,7 @@ import { Product } from "./models/productsModel.js";
 import { test } from "./test.js";
 import mongoose from "mongoose";
 import { User } from "./models/usersModel.js";
+import { auth } from "./configs/fbConfigs.js";
 
 dotenv.config();
 
@@ -56,6 +57,8 @@ try {
   });
   const dbStore = await Product.insertMany(newArray);
   const count = await Product.countDocuments()
+  const user = await auth.getUserByEmail("essienmax484@gmail.com")
+  await auth.deleteUser(user.uid)
   console.log(count)
   console.log(dbStore[0].createdAt, "hello");
 } catch (err) {

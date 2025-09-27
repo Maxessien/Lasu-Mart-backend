@@ -13,7 +13,6 @@ if (process.env.NODE_ENV === "development") {
     credential: admin.credential.cert(serviceAccount),
   });
 }
-
 const db = admin.firestore();
 const auth = admin.auth();
 

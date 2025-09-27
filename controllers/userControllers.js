@@ -2,7 +2,7 @@ import { findError } from "../fbAuthErrors.js";
 import { auth } from "../configs/fbConfigs.js";
 import { User } from "../models/usersModel.js";
 import { uploader } from "../configs/cloudinaryConfigs.js";
-import { cleanUpStorage } from "../utils/usersUtilFns.js";
+import { cleanUpStorage, populateUserCart } from "../utils/usersUtilFns.js";
 
 const createUser = async (req, res) => {
   try {
@@ -32,8 +32,9 @@ const getUser = async (req, res)=>{
   try {
     const uid = req.query.uid
     const user = await User.findOne({userId: uid}).lean()
-    console.log(user, "loggedIn")
-    return res.status(202).json(user)
+    if (!user) throw new Error("User not found")
+    const populatedCart = await populateUserCart(user.cart)
+    return res.status(202).json({...user, cart: populatedCart})
   } catch (err) {
     console.log(err)
     return res.status(404).json({message: "User not found"})
@@ -43,17 +44,15 @@ const getUser = async (req, res)=>{
 const updateUser = async (req, res) => {
   try {
     console.log(req.auth);
-    if (!req.param || req.param  !== "dbOnly"){
+    if (!req.query?.type || req.query?.type  !== "dbOnly"){
       const user = await auth.updateUser(req.auth.uid, req.body);
     }
-    console.log(req.body)
-    const dbStore = await User.findOneAndUpdate(
+    const updatedUser = await User.findOneAndUpdate(
       { userId: req.auth.uid },
       req.body,
       { new: true }
     ).lean();
-    console.log(dbStore);
-    return res.status(201).json({message: "Update Successful"});
+    return res.status(201).json({...updatedUser});
   } catch (err) {
     const errorMessage = findError(err.code);
     console.log(errorMessage);
